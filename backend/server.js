@@ -1,8 +1,11 @@
-const express = require('express');
+const express = require('express'); // Server entry point - env updated
 const cors = require('cors');
 const dotenv = require('dotenv');
 
 dotenv.config();
+
+console.log('MONGO_URI loaded:', process.env.MONGO_URI ? 'Yes' : 'No');
+
 const connectDB = require('./config/db');
 
 connectDB();
@@ -16,9 +19,11 @@ app.use(cors());
 app.use(express.json());
 
 const authRoutes = require('./routes/authRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 app.get('/', (req, res) => {
     res.send('Welcome to Car Rental');

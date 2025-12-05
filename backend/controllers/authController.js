@@ -11,6 +11,13 @@ const generateToken = (id) => {
 // @desc    Register new user
 // @route   POST /api/auth/signup
 // @access  Public
+const { uploadToCloudinary } = require('../config/cloudinary');
+
+// ...
+
+// @desc    Register new user
+// @route   POST /api/auth/signup
+// @access  Public
 const registerUser = async (req, res) => {
     const { name, email, password, phone } = req.body;
 
@@ -21,11 +28,27 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
+        let licenseUrl = '';
+        if (req.file) {
+            try {
+                const result = await uploadToCloudinary(req.file.buffer);
+                licenseUrl = result.secure_url;
+            } catch (uploadError) {
+                console.error('Cloudinary upload failed:', uploadError);
+                // Continue without license or return error? 
+                // For now, let's log and continue, or maybe return error if strict.
+                // But since user might not have set up env vars yet, let's be lenient but loud.
+            }
+        }
+
         const user = await User.create({
             name,
             email,
             password,
             phone,
+            documents: {
+                license: licenseUrl
+            }
         });
 
         if (user) {
@@ -35,11 +58,13 @@ const registerUser = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 token: generateToken(user._id),
+                license: user.documents.license
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
         }
     } catch (error) {
+        console.error('Error in registerUser:', error);
         res.status(500).json({ message: error.message });
     }
 };
