@@ -58,6 +58,11 @@ const Navbar = () => {
                                     <UserIcon className="h-4 w-4 text-accent" />
                                     <span>{user.name}</span>
                                 </Link>
+                                {user.role === 'admin' && (
+                                    <Link to="/admin" className="text-sm font-medium hover:text-accent transition-colors">
+                                        Admin
+                                    </Link>
+                                )}
                                 <button
                                     onClick={handleLogout}
                                     className="text-gray-400 hover:text-white transition-colors"
@@ -120,6 +125,15 @@ const Navbar = () => {
                                             <UserIcon className="h-4 w-4" />
                                             <span>{user.name}</span>
                                         </div>
+                                        {user.role === 'admin' && (
+                                            <Link
+                                                to="/admin"
+                                                className="block w-full text-left py-2 text-gray-400 hover:text-white"
+                                                onClick={toggleMenu}
+                                            >
+                                                Admin Dashboard
+                                            </Link>
+                                        )}
                                         <button
                                             onClick={() => {
                                                 handleLogout();

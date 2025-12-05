@@ -3,6 +3,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, CreditCard, Calendar, MapPin, Shield, User } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 const BookingPage = () => {
     const { id } = useParams();
@@ -43,12 +45,39 @@ const BookingPage = () => {
         setStep(step + 1);
     };
 
-    const handleConfirm = () => {
-        // Simulate API call
-        setTimeout(() => {
+    const { user } = useAuth(); // Get user for token if needed, though axios interceptor is better. 
+    // But since we don't have interceptor yet, we'll use local storage or context.
+    // Actually AuthContext doesn't expose token directly in user object usually, let's check.
+    // In AuthContext, user object has token.
+
+    const handleConfirm = async () => {
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+
+            const bookingData = {
+                carId: car.id,
+                carName: car.name,
+                carImage: car.image,
+                startDate: bookingDetails.startDate,
+                endDate: bookingDetails.endDate,
+                totalPrice: bookingDetails.totalPrice,
+                paymentMethod: 'Credit Card', // Hardcoded for now based on UI
+                pickupLocation: bookingDetails.pickupLocation,
+            };
+
+            await axios.post('http://localhost:5001/api/bookings', bookingData, config);
+
             toast.success('Booking Confirmed! Check your dashboard.');
             navigate('/dashboard');
-        }, 1500);
+        } catch (error) {
+            console.error(error);
+            toast.error(error.response?.data?.message || 'Booking failed');
+        }
     };
 
     return (

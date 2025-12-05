@@ -11,6 +11,7 @@ const Signup = () => {
         password: '',
         phone: '',
     });
+    const [licenseFile, setLicenseFile] = useState(null);
 
     const { signup } = useAuth();
     const navigate = useNavigate();
@@ -19,13 +20,18 @@ const Signup = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleFileChange = (e) => {
+        setLicenseFile(e.target.files[0]);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const success = await signup(
             formData.name,
             formData.email,
             formData.password,
-            formData.phone
+            formData.phone,
+            licenseFile
         );
         if (success) {
             navigate('/');
@@ -103,6 +109,20 @@ const Signup = () => {
                                 onChange={handleChange}
                                 className="w-full bg-primary/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:border-accent transition-colors"
                                 placeholder="••••••••"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-300">Driving License</label>
+                        <div className="relative">
+                            <input
+                                type="file"
+                                name="license"
+                                onChange={handleFileChange}
+                                className="w-full bg-primary/50 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:border-accent transition-colors text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-primary hover:file:bg-accent/90"
+                                accept="image/*"
                                 required
                             />
                         </div>

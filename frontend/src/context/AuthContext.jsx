@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
             };
 
             const { data } = await axios.post(
-                'http://localhost:5000/api/auth/login',
+                'http://localhost:5001/api/auth/login',
                 { email, password },
                 config
             );
@@ -46,17 +46,26 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const signup = async (name, email, password, phone) => {
+    const signup = async (name, email, password, phone, licenseFile) => {
         try {
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('password', password);
+            formData.append('phone', phone);
+            if (licenseFile) {
+                formData.append('license', licenseFile);
+            }
+
             const config = {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                 },
             };
 
             const { data } = await axios.post(
-                'http://localhost:5000/api/auth/signup',
-                { name, email, password, phone },
+                'http://localhost:5001/api/auth/signup',
+                formData,
                 config
             );
 
@@ -65,6 +74,7 @@ export const AuthProvider = ({ children }) => {
             toast.success('Registration successful!');
             return true;
         } catch (error) {
+            console.error('Signup error:', error);
             toast.error(
                 error.response && error.response.data.message
                     ? error.response.data.message
