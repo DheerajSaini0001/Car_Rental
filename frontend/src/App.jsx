@@ -10,11 +10,16 @@ import CarListing from './pages/CarListing';
 import CarDetails from './pages/CarDetails';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import UserDashboard from './pages/UserDashboard';
+import BookingPage from './pages/BookingPage';
+
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <MainLayout>
           <Toaster position="top-center" />
           <Routes>
@@ -23,6 +28,8 @@ function App() {
             <Route path="/cars/:id" element={<CarDetails />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/dashboard" element={<UserDashboard />} />
+            <Route path="/booking/:id" element={<BookingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
           </Routes>

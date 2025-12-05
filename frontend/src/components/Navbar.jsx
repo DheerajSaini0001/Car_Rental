@@ -54,10 +54,10 @@ const Navbar = () => {
                     <div className="hidden md:flex items-center gap-4">
                         {user ? (
                             <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2 text-sm font-medium">
+                                <Link to="/dashboard" className="flex items-center gap-2 text-sm font-medium hover:text-white transition-colors">
                                     <UserIcon className="h-4 w-4 text-accent" />
                                     <span>{user.name}</span>
-                                </div>
+                                </Link>
                                 <button
                                     onClick={handleLogout}
                                     className="text-gray-400 hover:text-white transition-colors"

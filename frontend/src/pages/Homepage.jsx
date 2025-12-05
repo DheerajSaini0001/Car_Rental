@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Search, MapPin, Calendar, Car, ArrowRight, Star } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { CARS } from '../data/cars';
 
 const Homepage = () => {
     const navigate = useNavigate();
@@ -109,42 +110,45 @@ const Homepage = () => {
                     <h2 className="text-3xl font-bold mb-12 text-center">Trending Near You</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {[1, 2, 3].map((item) => (
-                            <div key={item} className="bg-secondary rounded-2xl overflow-hidden border border-white/5 hover:border-accent/30 transition-all group">
+                        {CARS.slice(0, 3).map((car) => (
+                            <div key={car.id} className="bg-secondary rounded-2xl overflow-hidden border border-white/5 hover:border-accent/30 transition-all group">
                                 <div className="relative h-48 overflow-hidden">
                                     <img
-                                        src={`https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=2070&auto=format&fit=crop`}
-                                        alt="Car"
+                                        src={car.image}
+                                        alt={car.name}
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                     />
                                     <div className="absolute top-4 right-4 bg-primary/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold border border-white/10">
-                                        $120/day
+                                        ${car.price}/day
                                     </div>
                                 </div>
                                 <div className="p-6">
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
-                                            <h3 className="text-xl font-bold">Tesla Model S</h3>
-                                            <p className="text-gray-400 text-sm">Electric • Automatic</p>
+                                            <h3 className="text-xl font-bold">{car.name}</h3>
+                                            <p className="text-gray-400 text-sm">{car.type} • Automatic</p>
                                         </div>
                                         <div className="flex items-center gap-1 text-yellow-500">
                                             <Star className="h-4 w-4 fill-current" />
-                                            <span className="text-sm font-bold text-white">4.9</span>
+                                            <span className="text-sm font-bold text-white">{car.rating}</span>
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-400">
                                         <div className="flex items-center gap-2">
                                             <div className="w-2 h-2 rounded-full bg-accent" />
-                                            0-60 in 2.3s
+                                            0-60 in {car.specs.acceleration}
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <div className="w-2 h-2 rounded-full bg-accent" />
-                                            400mi Range
+                                            {car.specs.range} Range
                                         </div>
                                     </div>
-                                    <button className="w-full py-3 rounded-xl border border-white/10 hover:bg-accent hover:text-primary hover:border-accent transition-all font-bold">
+                                    <Link
+                                        to={`/cars/${car.id}`}
+                                        className="block w-full text-center py-3 rounded-xl border border-white/10 hover:bg-accent hover:text-primary hover:border-accent transition-all font-bold"
+                                    >
                                         View Details
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         ))}

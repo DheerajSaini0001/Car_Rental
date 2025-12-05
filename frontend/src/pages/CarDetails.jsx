@@ -1,34 +1,32 @@
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, MapPin, Calendar, Shield, Zap, Users, Fuel, Settings, CheckCircle, ArrowLeft } from 'lucide-react';
 
+import { CARS } from '../data/cars';
+
 const CarDetails = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [selectedImage, setSelectedImage] = useState(0);
 
-    // Mock Data (In real app, fetch by ID)
-    const car = {
-        id: 1,
-        name: 'Tesla Model S Plaid',
-        brand: 'Tesla',
-        price: 150,
-        rating: 4.9,
-        reviews: 128,
-        description: 'Experience the pinnacle of electric performance. The Tesla Model S Plaid offers ludicrous acceleration, cutting-edge technology, and a premium interior that redefines luxury.',
-        images: [
-            'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=2070&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1560958089-b8a1929cea89?q=80&w=2071&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1617788138017-80ad40651399?q=80&w=2070&auto=format&fit=crop',
-        ],
-        features: ['Autopilot', 'Premium Sound', 'Glass Roof', 'Supercharging', '21" Wheels', 'Yoke Steering'],
-        specs: {
-            range: '396 mi',
-            acceleration: '1.99s',
-            topSpeed: '200 mph',
-            power: '1020 hp',
-        }
-    };
+    React.useEffect(() => {
+        setSelectedImage(0);
+        window.scrollTo(0, 0);
+    }, [id]);
+
+    const car = CARS.find(c => c.id == id);
+
+    if (!car) {
+        return (
+            <div className="min-h-screen flex items-center justify-center text-white">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold mb-4">Car Not Found</h2>
+                    <Link to="/cars" className="text-accent hover:underline">Back to Fleet</Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
@@ -180,7 +178,21 @@ const CarDetails = () => {
                                 </div>
                             </div>
 
-                            <button className="w-full bg-accent text-primary font-bold py-4 rounded-xl hover:bg-accent/90 transition-all hover:shadow-[0_0_20px_rgba(0,234,255,0.3)]">
+                            <button
+                                onClick={() => navigate(`/booking/${car.id}`, {
+                                    state: {
+                                        car,
+                                        bookingDetails: {
+                                            startDate: '2024-03-20', // Mock dates for now
+                                            endDate: '2024-03-23',
+                                            pickupLocation: 'SFO Airport',
+                                            totalDays: 3,
+                                            totalPrice: 475 // Mock total
+                                        }
+                                    }
+                                })}
+                                className="w-full bg-accent text-primary font-bold py-4 rounded-xl hover:bg-accent/90 transition-all hover:shadow-[0_0_20px_rgba(0,234,255,0.3)]"
+                            >
                                 Proceed to Booking
                             </button>
 

@@ -3,49 +3,7 @@ import { motion } from 'framer-motion';
 import { Filter, Search, Car, Fuel, Settings, Users, Star } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
-// Mock Data
-const CARS = [
-    {
-        id: 1,
-        name: 'Tesla Model S',
-        brand: 'Tesla',
-        type: 'Electric',
-        price: 120,
-        image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=2070&auto=format&fit=crop',
-        specs: { fuel: 'Electric', transmission: 'Auto', seats: 5 },
-        rating: 4.9,
-    },
-    {
-        id: 2,
-        name: 'BMW M4 Competition',
-        brand: 'BMW',
-        type: 'Luxury',
-        price: 150,
-        image: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?q=80&w=2070&auto=format&fit=crop',
-        specs: { fuel: 'Petrol', transmission: 'Auto', seats: 4 },
-        rating: 4.8,
-    },
-    {
-        id: 3,
-        name: 'Mercedes G-Wagon',
-        brand: 'Mercedes',
-        type: 'SUV',
-        price: 200,
-        image: 'https://images.unsplash.com/photo-1520031441872-265e4ff70366?q=80&w=2000&auto=format&fit=crop',
-        specs: { fuel: 'Petrol', transmission: 'Auto', seats: 5 },
-        rating: 4.9,
-    },
-    {
-        id: 4,
-        name: 'Porsche 911',
-        brand: 'Porsche',
-        type: 'Sports',
-        price: 250,
-        image: 'https://images.unsplash.com/photo-1503376763036-066120622c74?q=80&w=2070&auto=format&fit=crop',
-        specs: { fuel: 'Petrol', transmission: 'Manual', seats: 2 },
-        rating: 5.0,
-    },
-];
+import { CARS } from '../data/cars';
 
 const CarListing = () => {
     const location = useLocation();
@@ -54,10 +12,19 @@ const CarListing = () => {
         priceRange: 500,
     });
 
+    const [sortOption, setSortOption] = useState('Recommended');
+
     const filteredCars = CARS.filter((car) => {
         const matchesType = filters.type === 'All' || car.type === filters.type;
         const matchesPrice = car.price <= filters.priceRange;
         return matchesType && matchesPrice;
+    }).sort((a, b) => {
+        if (sortOption === 'Price: Low to High') {
+            return a.price - b.price;
+        } else if (sortOption === 'Price: High to Low') {
+            return b.price - a.price;
+        }
+        return 0; // Default (Recommended)
     });
 
     return (
@@ -119,10 +86,14 @@ const CarListing = () => {
                             <h1 className="text-2xl font-bold">Available Vehicles</h1>
                             <div className="flex items-center gap-2 text-sm text-gray-400">
                                 <span>Sort by:</span>
-                                <select className="bg-transparent border-none focus:ring-0 text-white font-medium cursor-pointer">
-                                    <option>Recommended</option>
-                                    <option>Price: Low to High</option>
-                                    <option>Price: High to Low</option>
+                                <select
+                                    value={sortOption}
+                                    onChange={(e) => setSortOption(e.target.value)}
+                                    className="bg-transparent border-none focus:ring-0 text-white font-medium cursor-pointer"
+                                >
+                                    <option className="bg-secondary text-white" value="Recommended">Recommended</option>
+                                    <option className="bg-secondary text-white" value="Price: Low to High">Price: Low to High</option>
+                                    <option className="bg-secondary text-white" value="Price: High to Low">Price: High to Low</option>
                                 </select>
                             </div>
                         </div>
