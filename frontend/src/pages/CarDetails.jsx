@@ -79,7 +79,7 @@ const CarDetails = () => {
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-3xl font-bold text-accent">${car.price}</p>
+                                    <p className="text-3xl font-bold text-accent">₹{car.price}</p>
                                     <p className="text-gray-400">per day</p>
                                 </div>
                             </div>
@@ -150,14 +150,14 @@ const CarDetails = () => {
                                                 <input type="checkbox" className="accent-accent w-4 h-4" />
                                                 <span className="text-sm">Full Insurance</span>
                                             </div>
-                                            <span className="text-sm font-bold">+$25</span>
+                                            <span className="text-sm font-bold">+₹25</span>
                                         </label>
                                         <label className="flex items-center justify-between p-3 rounded-xl border border-white/5 hover:bg-white/5 cursor-pointer transition-colors">
                                             <div className="flex items-center gap-3">
                                                 <input type="checkbox" className="accent-accent w-4 h-4" />
                                                 <span className="text-sm">Child Seat</span>
                                             </div>
-                                            <span className="text-sm font-bold">+$10</span>
+                                            <span className="text-sm font-bold">+₹10</span>
                                         </label>
                                     </div>
                                 </div>
@@ -166,15 +166,15 @@ const CarDetails = () => {
                             <div className="border-t border-white/10 pt-4 mb-6">
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-gray-400">Total (3 days)</span>
-                                    <span className="font-bold">$450</span>
+                                    <span className="font-bold">₹450</span>
                                 </div>
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-gray-400">Insurance</span>
-                                    <span className="font-bold">$25</span>
+                                    <span className="font-bold">₹25</span>
                                 </div>
                                 <div className="flex justify-between items-center text-lg font-bold mt-4 pt-4 border-t border-white/10">
                                     <span>Grand Total</span>
-                                    <span className="text-accent">$475</span>
+                                    <span className="text-accent">₹475</span>
                                 </div>
                             </div>
 

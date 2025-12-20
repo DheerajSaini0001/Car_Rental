@@ -300,15 +300,15 @@ const BookingPage = () => {
                             <div className="border-t border-white/10 pt-4">
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-gray-400">Car Rental ({bookingDetails.totalDays} days)</span>
-                                    <span className="font-bold">${car.price * bookingDetails.totalDays}</span>
+                                    <span className="font-bold">₹{car.price * bookingDetails.totalDays}</span>
                                 </div>
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-gray-400">Taxes & Fees</span>
-                                    <span className="font-bold">$50</span>
+                                    <span className="font-bold">₹50</span>
                                 </div>
                                 <div className="flex justify-between items-center text-lg font-bold mt-4 pt-4 border-t border-white/10">
                                     <span>Total</span>
-                                    <span className="text-accent">${bookingDetails.totalPrice}</span>
+                                    <span className="text-accent">₹{bookingDetails.totalPrice}</span>
                                 </div>
                             </div>
                         </div>

@@ -1,20 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Filter, Search, Car, Fuel, Settings, Users, Star } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { CARS } from '../data/cars';
+import axios from 'axios';
 
 const CarListing = () => {
     const location = useLocation();
     const [filters, setFilters] = useState({
         type: location.state?.type || 'All',
-        priceRange: 500,
+        priceRange: 10000,
     });
+    const [cars, setCars] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const [sortOption, setSortOption] = useState('Recommended');
 
-    const filteredCars = CARS.filter((car) => {
+    useEffect(() => {
+        const fetchCars = async () => {
+            try {
+                const { data } = await axios.get('http://localhost:5001/api/cars');
+                setCars(data);
+            } catch (error) {
+                console.error('Error fetching cars:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCars();
+    }, []);
+
+    const filteredCars = cars.filter((car) => {
         const matchesType = filters.type === 'All' || car.type === filters.type;
         const matchesPrice = car.price <= filters.priceRange;
         return matchesType && matchesPrice;
@@ -44,8 +60,8 @@ const CarListing = () => {
                                 <label className="block text-sm font-medium mb-2">Max Price: ${filters.priceRange}/day</label>
                                 <input
                                     type="range"
-                                    min="50"
-                                    max="500"
+                                    min="700"
+                                    max="10000"
                                     value={filters.priceRange}
                                     onChange={(e) => setFilters({ ...filters, priceRange: Number(e.target.value) })}
                                     className="w-full accent-accent"
@@ -72,7 +88,7 @@ const CarListing = () => {
                             </div>
 
                             <button
-                                onClick={() => setFilters({ type: 'All', priceRange: 500 })}
+                                onClick={() => setFilters({ type: 'All', priceRange: 10000 })}
                                 className="w-full bg-white/5 hover:bg-white/10 text-white py-2 rounded-lg transition-colors text-sm font-medium"
                             >
                                 Reset Filters
@@ -101,7 +117,7 @@ const CarListing = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                             {filteredCars.map((car) => (
                                 <motion.div
-                                    key={car.id}
+                                    key={car._id}
                                     initial={{ opacity: 0, y: 20 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
@@ -134,20 +150,20 @@ const CarListing = () => {
                                         <div className="grid grid-cols-3 gap-2 my-4">
                                             <div className="bg-white/5 rounded-lg p-2 text-center">
                                                 <Fuel className="h-4 w-4 mx-auto mb-1 text-gray-400" />
-                                                <p className="text-[10px] text-gray-300">{car.specs.fuel}</p>
+                                                <p className="text-[10px] text-gray-300">{car.specs?.fuel || 'N/A'}</p>
                                             </div>
                                             <div className="bg-white/5 rounded-lg p-2 text-center">
                                                 <Settings className="h-4 w-4 mx-auto mb-1 text-gray-400" />
-                                                <p className="text-[10px] text-gray-300">{car.specs.transmission}</p>
+                                                <p className="text-[10px] text-gray-300">{car.specs?.transmission || 'Auto'}</p>
                                             </div>
                                             <div className="bg-white/5 rounded-lg p-2 text-center">
                                                 <Users className="h-4 w-4 mx-auto mb-1 text-gray-400" />
-                                                <p className="text-[10px] text-gray-300">{car.specs.seats} Seats</p>
+                                                <p className="text-[10px] text-gray-300">{car.specs?.seats || '4'} Seats</p>
                                             </div>
                                         </div>
 
                                         <Link
-                                            to={`/cars/${car.id}`}
+                                            to={`/cars/${car._id}`}
                                             className="block w-full text-center bg-accent text-primary font-bold py-2.5 rounded-xl hover:bg-accent/90 transition-colors"
                                         >
                                             View Details
