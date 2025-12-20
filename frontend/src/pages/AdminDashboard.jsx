@@ -270,7 +270,7 @@ const AdminDashboard = () => {
                                                         <p className="text-xs text-gray-500">{car.brand}</p>
                                                     </div>
                                                 </td>
-                                                <td className="p-4">${car.price}</td>
+                                                <td className="p-4">₹{car.price}</td>
                                                 <td className="p-4">{car.type}</td>
                                                 <td className="p-4 flex items-center gap-1">
                                                     <span className="text-yellow-500">★</span> {car.rating}
@@ -333,7 +333,7 @@ const AdminDashboard = () => {
                                                     <p>{new Date(booking.startDate).toLocaleDateString()} -</p>
                                                     <p>{new Date(booking.endDate).toLocaleDateString()}</p>
                                                 </td>
-                                                <td className="p-4 font-bold text-accent">${booking.totalPrice}</td>
+                                                <td className="p-4 font-bold text-accent">₹{booking.totalPrice}</td>
                                                 <td className="p-4">
                                                     <span className={`px-2 py-1 rounded text-xs font-bold ${booking.status === 'Confirmed' ? 'bg-green-500/20 text-green-400' :
                                                         booking.status === 'Pending' ? 'bg-yellow-500/20 text-yellow-400' :

@@ -97,7 +97,7 @@ const Homepage = () => {
                                     <Car className="h-6 w-6 text-accent group-hover:text-primary" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-1">{category}</h3>
-                                <p className="text-sm text-gray-500">Starting at $50/day</p>
+                                <p className="text-sm text-gray-500">Starting at ₹4000/day</p>
                             </motion.div>
                         ))}
                     </div>
@@ -119,7 +119,7 @@ const Homepage = () => {
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                     />
                                     <div className="absolute top-4 right-4 bg-primary/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold border border-white/10">
-                                        ${car.price}/day
+                                        ₹{car.price}/day
                                     </div>
                                 </div>
                                 <div className="p-6">

@@ -135,8 +135,8 @@ const UserDashboard = () => {
                                                         {booking.pickupLocation}
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        <CreditCard className="h-4 w-4 text-accent" />
-                                                        ${booking.totalPrice}
+                                                        <div className="text-sm text-gray-400">Total</div>
+                                                        <div className="font-bold text-accent">₹{booking.totalPrice}</div>
                                                     </div>
                                                 </div>
                                             </div>

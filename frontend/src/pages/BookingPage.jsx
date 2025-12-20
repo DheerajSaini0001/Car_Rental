@@ -15,7 +15,7 @@ const BookingPage = () => {
     // Mock car data if not passed via state (fallback)
     const car = location.state?.car || {
         name: 'Tesla Model S',
-        price: 120,
+        price: 12000,
         image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=2070&auto=format&fit=crop',
     };
 
@@ -24,7 +24,7 @@ const BookingPage = () => {
         endDate: '2024-03-23',
         pickupLocation: 'SFO Airport',
         totalDays: 3,
-        totalPrice: 450,
+        totalPrice: 36000,
     };
 
     const [formData, setFormData] = useState({
@@ -304,7 +304,7 @@ const BookingPage = () => {
                                 </div>
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-gray-400">Taxes & Fees</span>
-                                    <span className="font-bold">₹50</span>
+                                    <span className="font-bold">₹2000</span>
                                 </div>
                                 <div className="flex justify-between items-center text-lg font-bold mt-4 pt-4 border-t border-white/10">
                                     <span>Total</span>

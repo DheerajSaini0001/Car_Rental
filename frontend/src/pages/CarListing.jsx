@@ -57,7 +57,7 @@ const CarListing = () => {
 
                             {/* Price Range */}
                             <div className="mb-6">
-                                <label className="block text-sm font-medium mb-2">Max Price: ${filters.priceRange}/day</label>
+                                <label className="block text-sm font-medium mb-2">Max Price: ₹{filters.priceRange}/day</label>
                                 <input
                                     type="range"
                                     min="700"
@@ -142,7 +142,7 @@ const CarListing = () => {
                                                 <h3 className="text-lg font-bold leading-tight">{car.name}</h3>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-xl font-bold">${car.price}</p>
+                                                <p className="text-xl font-bold">₹{car.price}</p>
                                                 <p className="text-xs text-gray-400">/day</p>
                                             </div>
                                         </div>
