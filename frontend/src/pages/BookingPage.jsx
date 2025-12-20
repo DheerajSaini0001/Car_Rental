@@ -254,7 +254,7 @@ const BookingPage = () => {
                                             Back
                                         </button>
                                         <button onClick={handleConfirm} className="bg-accent text-primary font-bold px-8 py-3 rounded-xl hover:bg-accent/90 transition-all hover:shadow-[0_0_20px_rgba(0,234,255,0.3)]">
-                                            Confirm & Pay ${bookingDetails.totalPrice}
+                                            Confirm & Pay ₹{bookingDetails.totalPrice}
                                         </button>
                                     </div>
                                 </motion.div>
