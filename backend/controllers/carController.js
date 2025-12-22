@@ -13,6 +13,22 @@ const getCars = async (req, res) => {
     }
 };
 
+// @desc    Get single car by ID
+// @route   GET /api/cars/:id
+// @access  Public
+const getCarById = async (req, res) => {
+    try {
+        const car = await Car.findById(req.params.id);
+        if (car) {
+            res.json(car);
+        } else {
+            res.status(404).json({ message: 'Car not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // @desc    Create a new car
 // @route   POST /api/cars
 // @access  Private/Admin
@@ -64,4 +80,5 @@ module.exports = {
     getCars,
     createCar,
     deleteCar,
+    getCarById,
 };
