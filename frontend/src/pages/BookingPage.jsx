@@ -32,10 +32,39 @@ const BookingPage = () => {
         lastName: '',
         email: '',
         phone: '',
-        cardNumber: '',
-        expiry: '',
-        cvc: '',
     });
+
+    const [otp, setOtp] = useState('');
+    const [otpSent, setOtpSent] = useState(false);
+    const [isVerified, setIsVerified] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const sendOtp = async () => {
+        setLoading(true);
+        try {
+            await axios.post('http://localhost:5001/api/otp/send', { email: formData.email });
+            setOtpSent(true);
+            toast.success('OTP sent to your email');
+        } catch (error) {
+            toast.error('Failed to send OTP');
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const verifyOtp = async () => {
+        setLoading(true);
+        try {
+            await axios.post('http://localhost:5001/api/otp/verify', { email: formData.email, otp });
+            setIsVerified(true);
+            toast.success('Email Verified Successfully');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Invalid OTP');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -66,7 +95,7 @@ const BookingPage = () => {
                 startDate: bookingDetails.startDate,
                 endDate: bookingDetails.endDate,
                 totalPrice: bookingDetails.totalPrice,
-                paymentMethod: 'Credit Card', // Hardcoded for now based on UI
+                paymentMethod: 'Pay on Arrival (OTP Verified)',
                 pickupLocation: bookingDetails.pickupLocation,
             };
 
@@ -160,60 +189,57 @@ const BookingPage = () => {
 
                             {step === 2 && (
                                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                                    <h2 className="text-2xl font-bold mb-6">Payment Method</h2>
+                                    <h2 className="text-2xl font-bold mb-6">Verify Email</h2>
                                     <div className="space-y-6">
-                                        <div className="p-4 border border-accent/50 bg-accent/5 rounded-xl flex items-center gap-4">
-                                            <CreditCard className="h-6 w-6 text-accent" />
-                                            <div>
-                                                <p className="font-bold">Credit / Debit Card</p>
-                                                <p className="text-sm text-gray-400">Secure encrypted payment</p>
-                                            </div>
-                                            <div className="ml-auto w-4 h-4 rounded-full bg-accent" />
-                                        </div>
+                                        <div className="p-4 border border-accent/50 bg-accent/5 rounded-xl">
+                                            <p className="text-gray-300 text-sm mb-4">
+                                                We will send a One-Time Password (OTP) to <strong>{formData.email}</strong> to verify your identity.
+                                            </p>
 
-                                        <div className="space-y-4">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-medium text-gray-300">Card Number</label>
-                                                <input
-                                                    type="text"
-                                                    name="cardNumber"
-                                                    value={formData.cardNumber}
-                                                    onChange={handleInputChange}
-                                                    className="w-full bg-primary/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-accent"
-                                                    placeholder="0000 0000 0000 0000"
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-6">
-                                                <div className="space-y-2">
-                                                    <label className="text-sm font-medium text-gray-300">Expiry Date</label>
-                                                    <input
-                                                        type="text"
-                                                        name="expiry"
-                                                        value={formData.expiry}
-                                                        onChange={handleInputChange}
-                                                        className="w-full bg-primary/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-accent"
-                                                        placeholder="MM/YY"
-                                                    />
+                                            {!otpSent ? (
+                                                <button
+                                                    onClick={sendOtp}
+                                                    disabled={loading}
+                                                    className="bg-accent text-primary font-bold px-6 py-2 rounded-lg hover:bg-accent/90 transition-all disabled:opacity-50"
+                                                >
+                                                    {loading ? 'Sending...' : 'Send OTP'}
+                                                </button>
+                                            ) : (
+                                                <div className="space-y-4">
+                                                    <div className="flex items-center gap-2 text-green-400 text-sm">
+                                                        <CheckCircle className="h-4 w-4" /> OTP sent to your email!
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-sm font-medium text-gray-300 block mb-2">Enter OTP</label>
+                                                        <input
+                                                            type="text"
+                                                            value={otp}
+                                                            onChange={(e) => setOtp(e.target.value)}
+                                                            className="w-full bg-primary/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-accent tracking-widest text-center text-lg font-bold"
+                                                            placeholder="000000"
+                                                            maxLength={6}
+                                                        />
+                                                    </div>
+                                                    <button
+                                                        onClick={verifyOtp}
+                                                        disabled={loading || otp.length !== 6 || isVerified}
+                                                        className="w-full bg-accent text-primary font-bold px-6 py-3 rounded-lg hover:bg-accent/90 transition-all disabled:opacity-50"
+                                                    >
+                                                        {loading ? 'Verifying...' : isVerified ? 'Verified' : 'Verify & Continue'}
+                                                    </button>
                                                 </div>
-                                                <div className="space-y-2">
-                                                    <label className="text-sm font-medium text-gray-300">CVC</label>
-                                                    <input
-                                                        type="text"
-                                                        name="cvc"
-                                                        value={formData.cvc}
-                                                        onChange={handleInputChange}
-                                                        className="w-full bg-primary/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-accent"
-                                                        placeholder="123"
-                                                    />
-                                                </div>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="mt-8 flex justify-between">
                                         <button onClick={() => setStep(1)} className="text-gray-400 hover:text-white font-medium">
                                             Back
                                         </button>
-                                        <button onClick={handleNext} className="bg-accent text-primary font-bold px-8 py-3 rounded-xl hover:bg-accent/90 transition-all">
+                                        <button
+                                            onClick={handleNext}
+                                            disabled={!isVerified}
+                                            className="bg-accent text-primary font-bold px-8 py-3 rounded-xl hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
                                             Review Order
                                         </button>
                                     </div>
@@ -234,10 +260,10 @@ const BookingPage = () => {
                                             </div>
                                         </div>
                                         <div className="bg-white/5 rounded-xl p-4 flex items-start gap-4">
-                                            <CreditCard className="h-5 w-5 text-accent mt-1" />
+                                            <CheckCircle className="h-5 w-5 text-accent mt-1" />
                                             <div>
-                                                <p className="text-sm text-gray-400">Payment Method</p>
-                                                <p className="font-bold">Visa ending in {formData.cardNumber.slice(-4) || '0000'}</p>
+                                                <p className="text-sm text-gray-400">Verification</p>
+                                                <p className="font-bold text-green-400">Email Verified via OTP</p>
                                             </div>
                                         </div>
                                     </div>

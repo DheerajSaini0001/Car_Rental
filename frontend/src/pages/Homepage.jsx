@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, MapPin, Calendar, Car, ArrowRight, Star } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { CARS } from '../data/cars';
+import LocationPicker from '../components/LocationPicker';
+import CustomDatePicker from '../components/CustomDatePicker';
 
 const Homepage = () => {
     const navigate = useNavigate();
+    const [pickupLocation, setPickupLocation] = useState('');
+    const [date, setDate] = useState(null);
     return (
         <div className="overflow-hidden">
             {/* Hero Section */}
@@ -31,20 +35,20 @@ const Homepage = () => {
 
                         {/* Search Bar */}
                         <div className="bg-white/5 backdrop-blur-lg border border-white/10 p-2 rounded-2xl flex flex-col md:flex-row gap-2">
-                            <div className="flex-1 bg-primary/50 rounded-xl px-4 py-3 flex items-center gap-3 border border-white/5 focus-within:border-accent/50 transition-colors">
-                                <MapPin className="text-accent h-5 w-5" />
-                                <input
-                                    type="text"
+                            {/* 
+                            <div className="flex-1 bg-primary/50 rounded-xl px-4 py-2 flex items-center gap-3 border border-white/5 focus-within:border-accent/50 transition-colors">
+                                <LocationPicker 
+                                    value={pickupLocation} 
+                                    onChange={setPickupLocation}
                                     placeholder="Pickup Location"
-                                    className="bg-transparent w-full focus:outline-none text-sm"
                                 />
-                            </div>
-                            <div className="flex-1 bg-primary/50 rounded-xl px-4 py-3 flex items-center gap-3 border border-white/5 focus-within:border-accent/50 transition-colors">
-                                <Calendar className="text-accent h-5 w-5" />
-                                <input
-                                    type="text"
+                            </div> 
+                            */}
+                            <div className="flex-1 bg-primary/50 rounded-xl px-4 py-2 flex items-center gap-3 border border-white/5 focus-within:border-accent/50 transition-colors">
+                                <CustomDatePicker
+                                    selected={date}
+                                    onChange={(d) => setDate(d)}
                                     placeholder="Date & Time"
-                                    className="bg-transparent w-full focus:outline-none text-sm"
                                 />
                             </div>
                             <button className="bg-accent text-primary font-bold px-8 py-3 rounded-xl hover:bg-accent/90 transition-all hover:shadow-[0_0_20px_rgba(0,234,255,0.3)]">

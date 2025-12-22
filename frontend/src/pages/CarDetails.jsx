@@ -1,23 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Star, MapPin, Calendar, Shield, Zap, Users, Fuel, Settings, CheckCircle, ArrowLeft } from 'lucide-react';
-
-import { CARS } from '../data/cars';
+import axios from 'axios';
+import { Star, Shield, Zap, Users, Fuel, Settings, CheckCircle, ArrowLeft } from 'lucide-react';
+import LocationPicker from '../components/LocationPicker';
+import CustomDatePicker from '../components/CustomDatePicker';
 
 const CarDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [selectedImage, setSelectedImage] = useState(0);
+    const [car, setCar] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    React.useEffect(() => {
-        setSelectedImage(0);
+    // Form states
+    const [pickupLocation, setPickupLocation] = useState('');
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+
+    useEffect(() => {
+        const fetchCar = async () => {
+            try {
+                const { data } = await axios.get(`http://localhost:5001/api/cars/${id}`);
+                // Transform data to match UI expectations
+                const transformedCar = {
+                    ...data,
+                    id: data._id,
+                    images: [data.image], // DB has single image
+                    specs: data.specs || { fuel: 'Petrol', transmission: 'Auto', seats: '5' },
+                    features: data.features || ['Air Conditioning', 'Bluetooth', 'Backup Camera', 'Navigation'],
+                    description: data.description || `Experience the thrill of driving this ${data.brand} ${data.name}. Perfect for city drives and weekend getaways.`,
+                    reviews: data.reviews || 0
+                };
+                setCar(transformedCar);
+            } catch (err) {
+                setError(err.response?.data?.message || 'Car not found');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCar();
         window.scrollTo(0, 0);
     }, [id]);
 
-    const car = CARS.find(c => c.id == id);
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center text-white">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+            </div>
+        );
+    }
 
-    if (!car) {
+    if (error || !car) {
         return (
             <div className="min-h-screen flex items-center justify-center text-white">
                 <div className="text-center">
@@ -117,28 +152,31 @@ const CarDetails = () => {
                             <h3 className="text-xl font-bold mb-6">Book this Car</h3>
 
                             <div className="space-y-4 mb-6">
-                                <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-300">Pick-up Location</label>
-                                    <div className="bg-primary/50 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3">
-                                        <MapPin className="text-gray-500 h-5 w-5" />
-                                        <input type="text" placeholder="Enter city or airport" className="bg-transparent w-full focus:outline-none text-sm" />
-                                    </div>
-                                </div>
+                                {/* 
+                                    <div className="bg-primary/50 border border-white/10 rounded-xl px-4 py-2 flex items-center gap-3">
+                                        <LocationPicker
+                                            value={pickupLocation}
+                                            onChange={setPickupLocation}
+                                            placeholder="Select Pick-up Location"
+                                        />
+                                    </div> 
+                                    */}
 
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium mb-2 text-gray-300">Start Date</label>
-                                        <div className="bg-primary/50 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3">
-                                            <Calendar className="text-gray-500 h-5 w-5" />
-                                            <input type="date" className="bg-transparent w-full focus:outline-none text-sm text-gray-400" />
-                                        </div>
+                                    <div className="bg-primary/50 border border-white/10 rounded-xl px-4 py-2 flex items-center gap-3">
+                                        <CustomDatePicker
+                                            selected={startDate}
+                                            onChange={(date) => setStartDate(date)}
+                                            placeholder="Start Date"
+                                        />
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-medium mb-2 text-gray-300">End Date</label>
-                                        <div className="bg-primary/50 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3">
-                                            <Calendar className="text-gray-500 h-5 w-5" />
-                                            <input type="date" className="bg-transparent w-full focus:outline-none text-sm text-gray-400" />
-                                        </div>
+                                    <div className="bg-primary/50 border border-white/10 rounded-xl px-4 py-2 flex items-center gap-3">
+                                        <CustomDatePicker
+                                            selected={endDate}
+                                            onChange={(date) => setEndDate(date)}
+                                            placeholder="End Date"
+                                            minDate={startDate}
+                                        />
                                     </div>
                                 </div>
 
@@ -183,9 +221,9 @@ const CarDetails = () => {
                                     state: {
                                         car,
                                         bookingDetails: {
-                                            startDate: '2024-03-20', // Mock dates for now
-                                            endDate: '2024-03-23',
-                                            pickupLocation: 'SFO Airport',
+                                            startDate: startDate?.toISOString() || new Date().toISOString(),
+                                            endDate: endDate?.toISOString() || new Date(Date.now() + 86400000).toISOString(),
+                                            pickupLocation: pickupLocation || 'SFO Airport',
                                             totalDays: 3,
                                             totalPrice: 38000 // Mock total
                                         }
