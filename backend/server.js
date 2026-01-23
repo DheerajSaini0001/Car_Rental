@@ -2,7 +2,8 @@ const express = require('express'); // Server entry point - env updated
 const cors = require('cors');
 const dotenv = require('dotenv');
 
-dotenv.config();
+const path = require('path');
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 console.log('MONGO_URI loaded:', process.env.MONGO_URI ? 'Yes' : 'No');
 
